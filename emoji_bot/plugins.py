@@ -7,6 +7,7 @@ import emojilib
 
 from emoji_bot.upload import do_upload
 from emoji_bot.errors import FormatError, AlreadyExistsError, UploadError
+from emoji_bot.img_scraping import img_scraping_main
 from slackbot_settings import bot_name, default_style, DEFAULT_REPLY, colors, fonts
 
 
@@ -21,6 +22,26 @@ def help(message):
             "  issue立ててくれたらいつか対応します。 @ https://github.com/toshi17/emojibot/issues"
         message.reply(error_message)
         print(e)
+
+@respond_to('add_img ([^ ]+) ([-\w]+)$')
+def add_img(message, text, emoji_name):
+    try:
+        print('got command add_img')
+        # print('msg:{},text:{},emojiname:{}'.format(message,text,emoji_name))
+        search_words = [(text, emoji_name)]
+        emojiLists = img_scraping_main(search_words)#
+
+        for emojiList in emojiLists:
+            img = emojiList[0]
+            img_name = emojiList[1]
+            print(img_name)
+            do_upload(img, img_name)
+
+            message.reply("\n\n（´･ω･)╮)）－＝≡ :{}:  `:{}:`".format(img_name, img_name))
+    except:
+        pass
+        
+
 
 @respond_to('add ([^ ]+) ([-\w]+)$')
 @respond_to('add ([^ ]+) ([-\w]+) (-.*)$')
@@ -99,7 +120,7 @@ def add_to_slack(message, text, emoji_name, style):
             typeface_file=style['font_path'],
             format=style['format']
         )
-        #upload to slack
+        # upload to slack
         print("upload to slack")
         do_upload(data, emoji_name)
 
