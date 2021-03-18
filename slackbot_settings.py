@@ -10,6 +10,7 @@ fonts = {
    'noto' : './assets/fonts/NotoSansMonoCJKjp-Bold.otf',
    'ipag' : './assets/fonts/ipag.ttf',
    'mplus' : './assets/fonts/ipag.ttf',
+   'stick-regular' : './assets/fonts/Stick-Regular.ttf',
 }
 
 """
