@@ -65,7 +65,7 @@ def do_upload(img, emoji_name):
         raise AlreadyExistsError("{} already exists".format(emoji_name))
     else:
         upload_emoji(session, emoji_name, img)
-        test_upload(session)
+        # test_upload(session)
     print('\nUploade Complete.')
 
 def get_current_emoji_list(session):
