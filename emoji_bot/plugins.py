@@ -70,7 +70,7 @@ def color(message):
     print('got command colors')
     color_message = "\n  _Colors:_  \n"
     for color_name, color_code in colors.items():
-        color_message += '   {}: {},'.format(color_name, '#'+color_code)
+        color_message += '   {}: {},\n'.format(color_name, '#'+color_code)
     message.reply(color_message)
 
 @respond_to('fonts', re.IGNORECASE)
@@ -100,10 +100,12 @@ def add_to_slack(message, text, emoji_name, style):
             format=style['format']
         )
         #upload to slack
+        print("upload to slack")
         do_upload(data, emoji_name)
 
         message.reply("\n\n（´･ω･)╮)）－＝≡ :{}:  `:{}:`".format(emoji_name, emoji_name))
     except Exception as e:
+        print(e)
         raise
 
 def set_style(option, style):
