@@ -77,6 +77,7 @@ def download_img(src, dist_path):
             img = crop_max_square(img)
             print(f'saving img : {dist_path}')
             img.save(dist_path) # 保存
+            # print(type(img))
             img.close()
     except:
         pass
@@ -121,21 +122,24 @@ def img_scraping_main(search_words):
         url = f"https://search.yahoo.co.jp/image/search?p={search_word[0]}&ei=UTF-8&b="
         max_page_num = 1
         all_img_src_list = scraping(url, max_page_num)
+        # print(len(all_img_src_list))
 
         # 画像ダウンロード
         for i, src in enumerate(all_img_src_list):
-            # print(src)
-            # download image
-            path = f'./img/{search_word[1]}_{i}.jpg'
-            download_img(src, path)
 
-            img_byte = img2byte(path)
-            img_name = f'{search_word[1]}_{i}'
+            if i < 3:    
+                # print(src)
+                # download image
+                path = f'./img/{search_word[1]}_{i}.jpg'
+                download_img(src, path)
 
-            if img_byte != 0:
-                output.append((img_byte, img_name))
-            else:
-                continue
+                img_byte = img2byte(path)
+                img_name = f'{search_word[1]}_{i}'
+
+                if img_byte != 0:
+                    output.append((img_byte, img_name))
+                else:
+                    continue
     
     return output
 

@@ -1,5 +1,8 @@
+from io import StringIO
 import re
 import getopt
+from urllib import request
+import urllib
 from slackbot.bot import respond_to
 from slackbot.bot import default_reply
 
@@ -10,7 +13,7 @@ from emoji_bot.errors import FormatError, AlreadyExistsError, UploadError
 from emoji_bot.img_scraping import img_scraping_main
 from slackbot_settings import bot_name, default_style, DEFAULT_REPLY, colors, fonts
 
-
+import requests
 
 @respond_to('help', re.IGNORECASE)
 def help(message):
@@ -18,8 +21,8 @@ def help(message):
         print('got command help')
         message.send(DEFAULT_REPLY)
     except Exception as e:
-        error_message=" :innocent: 不明なエラー  :innocent: \n\n"+\
-            "  issue立ててくれたらいつか対応します。 @ https://github.com/toshi17/emojibot/issues"
+        error_message=" :question: 不明なエラー :question: \n\n"+\
+            "再度入力してください :man-bowing:"
         message.reply(error_message)
         print(e)
 
@@ -27,17 +30,18 @@ def help(message):
 def add_img(message, text, emoji_name):
     try:
         print('got command add_img')
+        message.reply("画像を取得中です・・・")
         # print('msg:{},text:{},emojiname:{}'.format(message,text,emoji_name))
         search_words = [(text, emoji_name)]
-        emojiLists = img_scraping_main(search_words)#
-
-        for emojiList in emojiLists:
-            img = emojiList[0]
-            img_name = emojiList[1]
-            print(img_name)
-            do_upload(img, img_name)
-
-            message.reply("\n\n（´･ω･)╮)）－＝≡ :{}:  `:{}:`".format(img_name, img_name))
+        emojiLists = img_scraping_main(search_words)
+        message.reply("スタンプ登録中・・・")
+        for index, emojiList in enumerate(emojiLists):
+            if index < 3:        
+                img = emojiList[0]
+                img_name = emojiList[1]
+                print(img_name)
+                do_upload(img, img_name)
+                message.reply("\n\n（´･ω･)╮)）－＝≡ :{}:  `:{}:`".format(img_name, img_name))
     except:
         pass
         
@@ -53,7 +57,7 @@ def add(message, text, emoji_name, option=None):
             'size_fixed': default_style['size_fixed'],
             'disable_stretch': default_style['disable_stretch'],
             'align': default_style['align'],
-            'font_path': default_style['font_path'],
+            'font': default_style['font'],
             'format': default_style['format']
         }
 
@@ -61,35 +65,30 @@ def add(message, text, emoji_name, option=None):
             set_style(option, style)
         add_to_slack(message, text, emoji_name, style)
     except FormatError as e:
-        error_message=" :warning: 構文エラー  :warning: \n\n"+\
-            "  "+str(e)+": 入力フォーマットは以下の通りです。 \n" +\
-            "  - `@"+bot_name+" add <text> <emoji_name> [option]`\n" +\
-            "       _Options:_\n" +\
-            "       - `-c, --color <text_color>` -- 文字色の設定\n" +\
-            "       - `-b, --back <back_color>` -- 背景色の設定\n" +\
-            "       - `-f, --font <font>` -- フォントの設定\n" +\
-            "       ※ 色はRGB値か文字列で指定可能。RGB値で指定する場合は6桁か3桁の16進数で記述してください。\n" +\
-            "       ※ emoji_nameは英数字、ハイフン、アンダーバーで指定してください。\n" +\
-            "       ※ 例：@"+bot_name+" add プロ pro -c 000 -b FFFFFF\n"
+        error_message=" :man-bowing::man-bowing::man-bowing: 構文エラー!!! :man-bowing::man-bowing::man-bowing: \n\n"+\
+            "  "+str(e)+": 入力フォーマットは以下の通りです！\n" +\
+            "  - `add <テキスト> <スタンプの名前> [オプション]`\n" +\
+            "  - `add_img <画像検索する名前> <スタンプの名前>`\n" +\
+            "  詳しくは `help` コマンドで確認！\n"
         message.reply(error_message)
     except UploadError as e:
         error_message=" :no_entry: アップロードエラー  :no_entry: \n\n"+\
             "  アクセストークンが不正です。"
         message.reply(error_message)        
     except AlreadyExistsError as e:
-        error_message=" :warning: アップロードエラー  :warning: \n\n"+\
-            "   `:"+emoji_name+":`は既に :"+emoji_name+": で使用されています。別の名前を指定して下さい。"
+        error_message=" :exclamation: アップロードエラー  :exclamation: \n\n"+\
+            "   `:"+emoji_name+":`は既に :"+emoji_name+": で使用されています！\n別の名前を指定して下さい！"
         message.reply(error_message)
     except Exception as e:
-        error_message=" :innocent: 不明なエラー  :innocent: \n\n"+\
-            "   issue立ててくれたらいつか対応します。 @ https://github.com/toshi17/emojibot/issues"
+        error_message=":question: 不明なエラー :question: \n\n"+\
+            "再度入力してください :man-bowing:"
         message.reply(error_message)
         print(e)
 
 @respond_to('colors', re.IGNORECASE)
 def color(message):
     print('got command colors')
-    color_message = "\n  _Colors:_  \n"
+    color_message = "\n  _Colors_  \n"
     for color_name, color_code in colors.items():
         color_message += '   {}: {},\n'.format(color_name, '#'+color_code)
     message.reply(color_message)
@@ -97,9 +96,9 @@ def color(message):
 @respond_to('fonts', re.IGNORECASE)
 def font(message):
     print('got command fonts')
-    font_message = "\n  _Fonts:_  \n"
-    for font_name, font_path in fonts.items():
-        font_message += '   {},'.format(font_name)
+    font_message = "\n  _Fonts_  \n"
+    for index, font_name, in enumerate(fonts.items()):
+        font_message += '   {}: :ABC{}:,\n'.format(font_name[0], index+1)
     message.reply(font_message)
 
 def add_to_slack(message, text, emoji_name, style):
@@ -108,6 +107,24 @@ def add_to_slack(message, text, emoji_name, style):
         print(text, emoji_name)
 
         print('- uploading {}'.format(text))
+        
+        # print(encodenewline(text))
+        # print(urllib.parse.quote(encodenewline(text)))
+
+        #print(text)
+        #stirngs = text.split("_", 1)
+        #print(stirngs)
+        #text = stirngs[0] + '\n' + strings[1]
+
+        color = style['color']
+        background_color=style['back_color']
+        font = style['font']
+        print(font)
+
+        
+        img = requests.get(f"https://emoji-gen.ninja/emoji_download?align=center&back_color={background_color}&color={color}&font={font}&locale=ja&public_fg=true&size_fixed=false&stretch=true&text=" + urllib.parse.quote(encodenewline(text)), stream=True)
+
+        """
         data = emojilib.generate(
             text=text.replace('\\n', '\n'),
             width=128,
@@ -120,9 +137,10 @@ def add_to_slack(message, text, emoji_name, style):
             typeface_file=style['font_path'],
             format=style['format']
         )
+        """
         # upload to slack
         print("upload to slack")
-        do_upload(data, emoji_name)
+        do_upload(img.content, emoji_name)
 
         message.reply("\n\n（´･ω･)╮)）－＝≡ :{}:  `:{}:`".format(emoji_name, emoji_name))
     except Exception as e:
@@ -147,9 +165,10 @@ def set_style(option, style):
                 style['back_color'] = color_code
             elif opt[0] in ('-f', '--font'):
                 font_path = get_font_path(opt[1])
-                style['font_path'] = font_path
+                style['font'] = font_path
 
 def get_color_code(text):
+    text = text.replace('#', '')
     repatter = re.compile('^([\da-fA-F]{6}|[\da-fA-F]{3})$')
     result = repatter.match(text)
     if result:
@@ -158,7 +177,7 @@ def get_color_code(text):
             color_code = color_code * 2
         return color_code+'FF'
     elif text in colors.keys():
-        return colors[text]+'FF'
+        return colors[text].replace('#','') +'FF'
     else:
         raise FormatError('invalid color format')
 
@@ -168,3 +187,14 @@ def get_font_path(text):
     else:
         raise FormatError('invalid font format')
 
+
+def encodenewline(text):
+    strings = text.split('_')
+    newstr = ''
+    for index in range(len(strings)):
+        if index != len(strings) - 1:
+            newstr += strings[index]
+            newstr += '\n'
+        else:
+            newstr += strings[index]
+    return newstr
