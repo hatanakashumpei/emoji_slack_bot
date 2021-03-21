@@ -119,7 +119,7 @@ def add_to_slack(message, text, emoji_name, style):
         color = style['color']
         background_color=style['back_color']
         font = style['font']
-        print(font)
+        # print(font)
 
         
         img = requests.get(f"https://emoji-gen.ninja/emoji_download?align=center&back_color={background_color}&color={color}&font={font}&locale=ja&public_fg=true&size_fixed=false&stretch=true&text=" + urllib.parse.quote(encodenewline(text)), stream=True)

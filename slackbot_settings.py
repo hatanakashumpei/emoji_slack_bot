@@ -1,10 +1,10 @@
 import matplotlib
 
-team_name = 'hackteam2workspace'
-bot_name = 'custom-stamp-bot'
+team_name = '100-un79027'
+bot_name = 'custom-stamp-bot2'
 
-API_TOKEN = ''
-cookie = ''
+API_TOKEN = 'xoxb-1346011685073-1882399324355-WOBRCrKXqRXsjWxJmKXmWdRC'
+cookie = 'x=6jg4zm8buglzp5x8ftorlnpo8.1616261308; d=zjDgjLDEbqvwAS8npY+BrxI8Uws/gjqfu1wm93AcLyTUFe3+EDlWybBJ1aETtMm9OB+LqUpqAcO7IVKPPGMv69jyuLGGrjQUdCQ4KtsSbeF7KmtTnshlJTtF/sVh0Y+T7vp1L5hRVrBfyvaBkyBaZjLk26iluS39zYDkNMra2V/JEM7Fpb2HT0AFIg==; d-s=1616261332; lc=1616261332; b=.6jg4zm8buglzp5x8ftorlnpo8; OptanonAlertBoxClosed=2021-03-20T17:45:51.511Z; OptanonConsent=isIABGlobal=false&datestamp=Sun+Mar+21+2021+02:45:52+GMT+0900+(Japan+Standard+Time)&version=6.12.0&hosts=&consentId=b512173b-8fb5-4c4d-8d5a-f281a15cf2f6&interactionCount=1&landingPath=NotLandingPage&groups=C0004:1,C0002:1,C0003:1,C0001:1&AwaitingReconsent=false&geolocation=JP;14'
 
 fonts = {
         "mono":"notosans-mono-bold", 
