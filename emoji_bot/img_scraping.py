@@ -46,9 +46,28 @@ def get_page_list(url, max_page_num):
     return page_list
 
 
-def img2byte(path):
-    """保存した画像をバイナリ化する
+def edit_img(src):
+    """画像を整形してbyte型返す
     """
+    time.sleep(1)
+    try:
+        img_read = urllib.request.urlopen(src).read() # 画像を取得
+        img_bin = io.BytesIO(img_read) # メモリに保持してディレクトリ偽装見たくする
+        pil_img = Image.open(img_bin) # PILで読み込む
+        pil_img = crop_max_square(pil_img)
+        img = io.BytesIO() # 空のインスタンス生成
+        pil_img.save(img, "JPEG") # 空のインスタンスに保持する
+        deit_img = img.getvalue() # バイナリデータを取得する (open().read()状態)
+
+        return deit_img
+
+    except:
+        return 0
+
+"""
+def img2byte(path):
+    # 保存した画像をバイナリ化する
+    
     try:
         # バイナリにしたい画像を読み込み
         tmpimg = Image.open(path)
@@ -67,20 +86,24 @@ def img2byte(path):
 
 
 def download_img(src, dist_path):
-    """画像を正方形に切り取って保存する
-    """
+    # 画像を正方形に切り取って保存する
+    
     time.sleep(1)
     try:
         with urllib.request.urlopen(src) as data:
             img_byte = data.read()
             img = Image.open(BytesIO(img_byte))
             img = crop_max_square(img)
+            print(type(img))
             print(f'saving img : {dist_path}')
             img.save(dist_path) # 保存
             # print(type(img))
             img.close()
     except:
         pass
+    
+"""
+
 
 def expand2square(pil_img, background_color):
     """余白を追加して正方形にする
@@ -130,10 +153,13 @@ def img_scraping_main(search_words):
             if i < 3:    
                 # print(src)
                 # download image
-                path = f'./img/{search_word[1]}_{i}.jpg'
-                download_img(src, path)
+                # path = f'./img/{search_word[1]}_{i}.jpg'
+                # download_img(src, path)
+                img_byte = edit_img(src)
 
-                img_byte = img2byte(path)
+                # print(src,img_byte)
+
+                # img_byte = img2byte(path)
                 img_name = f'{search_word[1]}_{i}'
 
                 if img_byte != 0:

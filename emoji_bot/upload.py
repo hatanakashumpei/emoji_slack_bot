@@ -37,6 +37,7 @@ def _fetch_api_token(session):
         for line in script.text.splitlines():
             if 'api_token' in line:
                 # api_token: "xoxs-12345-abcdefg....",
+                
                 line_= line.strip()
                 line_=line_[line_.find('"api_token":'):]
                 line_=line_[:line_.find(",")]
@@ -46,11 +47,11 @@ def _fetch_api_token(session):
     raise UploadError('api_token not found. response status={}'.format(r.status_code))
 
 def do_upload(img, emoji_name):
-    print("start upload")
+    # print("start upload")
     session = _session()
     # print(session)
     existing_emojis = get_current_emoji_list(session)
-    print("here")
+    # print("here")
     
     print("Processing {}.".format(emoji_name))
     if emoji_name in existing_emojis:
@@ -73,7 +74,7 @@ def get_current_emoji_list(session):
         }
         r = session.post(session.url_list, data=data)
         r.raise_for_status()
-        print(r.json())
+        # print(r.json())
         response_json = r.json()
 
         result.extend(map(lambda e: e["name"], response_json["emoji"]))
