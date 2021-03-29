@@ -1,5 +1,8 @@
 # Slack emojibot
-これはテキストから自動的に絵文字を作成する絵文字ぼっとです。
+自動的に絵文字を作成する絵文字ぼっとです。
+仕様としては
+- テキストを絵文字化。
+- yahoo画像検索の上位3件をそのままスタンプ化にする。
 
 # セットアップ
 
@@ -17,9 +20,13 @@ pip install -r requirements.txt
 - 新たに開いたタブから"Headers"を選ぶ
 - "Request-Headers"までスクロールし、"Cookie"の値をコピーし，slackbot_settings.pyに追加する
 
-# 起動
+# 起動の前に
 上記のセットアップを終えたら
+WSのAppを追加でHubotを追加し、そのtokenをslackbot_settings.pyに追加する。
+同様にWS名(teamname)もslackbot_settings.pyに追加する。
 
+# 起動
+slackbot_settings.pyの変数を修正したら
 ```
 python run.py
 ```
