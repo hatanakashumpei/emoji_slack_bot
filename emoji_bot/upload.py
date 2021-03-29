@@ -29,6 +29,7 @@ def _session():
 def _fetch_api_token(session):
     # Fetch the form first, to get an api_token.
     r = session.get(session.url_customize)
+    print(r)
     r.raise_for_status()
     soup = BeautifulSoup(r.text, "html.parser")
 
